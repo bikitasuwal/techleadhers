@@ -40,6 +40,15 @@ function App() {
 
     const results = [];
     for (const expense of expenses) {
+      // Skip API call if expense is already in home currency
+      if (expense.currency === homeCurrency) {
+        results.push({
+          ...expense,
+          convertedAmount: expense.amount,
+          conversionError: null,
+        });
+        continue;
+      }
       try {
         const result = await convertAmount(
           expense.currency,
@@ -72,14 +81,16 @@ function App() {
     convertAllExpenses();
   }, [expenses, homeCurrency, convertAllExpenses]);
 
-  // Calculate total 
+  // Calculate total and count failed conversions
   let total = 0;
   let anyConversionFailed = false;
+  let failedCount = 0;
   for (const expense of convertedExpenses) {
     if (expense.convertedAmount !== null) {
       total += expense.convertedAmount;
     } else {
       anyConversionFailed = true;
+      failedCount++;
     }
   }
 
@@ -130,6 +141,7 @@ function App() {
           onDelete={handleDelete}
           total={total}
           anyConversionFailed={anyConversionFailed}
+          failedCount={failedCount}
         />
       )}
     </div>

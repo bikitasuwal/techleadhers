@@ -5,6 +5,7 @@ export default function ExpenseList({
   onDelete,
   total,
   anyConversionFailed,
+  failedCount,
 }) {
   if (expenses.length === 0) {
     return <p className="empty-state">No expenses yet add one above.</p>;
@@ -57,7 +58,15 @@ export default function ExpenseList({
         <span>Total ({homeCurrency})</span>
         <span>
           {converting && "Calculating..."}
-          {!converting && anyConversionFailed && "Total unavailable"}
+          {!converting && anyConversionFailed && (
+            <>
+              {total.toFixed(2)}
+              <br />
+              <span className="conversion-error">
+                {failedCount} expense(s) could not be converted
+              </span>
+            </>
+          )}
           {!converting && !anyConversionFailed && total.toFixed(2)}
         </span>
       </div>
