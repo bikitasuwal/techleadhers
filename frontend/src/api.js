@@ -1,3 +1,4 @@
+// Backend base URL — all API calls go through Express server
 const BASE_URL = "http://localhost:5000";
 
 export async function getExpenses() {
@@ -28,6 +29,7 @@ export async function deleteExpense(id) {
   }
 }
 
+// Calls /convert?from=X&to=Y&amount=Z — server proxies to frankfurter.app
 export async function convertAmount(from, to, amount) {
   const res = await fetch(
     `${BASE_URL}/convert?from=${from}&to=${to}&amount=${amount}`
