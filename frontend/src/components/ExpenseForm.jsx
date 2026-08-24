@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const CURRENCIES = ["USD", "NPR", "EUR", "INR", "GBP"];
+const CURRENCIES = ["USD", "NPR", "EUR", "INR", "GBP", "AUD", "JPY", "CNY"];
 
 export default function ExpenseForm({ onAdd }) {
   const [title, setTitle] = useState("");
@@ -51,7 +51,7 @@ export default function ExpenseForm({ onAdd }) {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           min="0"
-          step="0.01"
+          step="1"
           disabled={submitting}
         />
         <select

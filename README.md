@@ -7,7 +7,7 @@ A small full-stack app where users can log expenses in different currencies and 
 - **Backend:** Node.js + Express
 - **Frontend:** React (Vite)
 - **Storage:** In-memory (no database)
-- **Exchange Rate API:** [frankfurter.app](https://frankfurter.app) (no API key required)
+- **Exchange Rate API:** [frankfurter.dev](https://frankfurter.dev) v2 (no API key required)
 
 ## Setup & Run
 
@@ -27,6 +27,8 @@ npm install
 npm run dev      # runs on http://localhost:5173
 ```
 
+The frontend uses Vite's dev server — API calls to `/expenses` and `/convert` are forwarded to `localhost:5000` via Vite proxy.
+
 ## API Reference
 
 ### Expenses (CRUD)
@@ -41,14 +43,15 @@ npm run dev      # runs on http://localhost:5173
 
 ```json
 {
-  "title": "dinner",
-  "amount": 20,
+  "title": "Lunch",
+  "amount": 12.50,
   "currency": "USD"
 }
 ```
 
-**Supported currencies:** USD, NPR, EUR, INR, GBP
+**Supported currencies:** USD, NPR, EUR, INR, GBP, AUD, JPY, CNY
 
+**Validation:** Returns `400` with error details if title is empty, amount is missing/non-positive, or currency is invalid.
 
 ### Currency Conversion
 
@@ -63,8 +66,13 @@ GET /convert?from=USD&to=INR&amount=100
   "from": "USD",
   "to": "INR",
   "amount": 100,
-  "convertedAmount": 8350.5,
-  "rate": 83.505
+  "convertedAmount": 9574.3,
+  "rate": 95.743
 }
 ```
 
+## Exchange Rate API
+
+Uses the [Frankfurter v2 API](https://frankfurter.dev) (`api.frankfurter.dev`), which provides exchange rates from 84 central banks covering 201 currencies. No API key is required.
+
+The backend fetches the rate from the API and performs the conversion server-side. The frontend never calls the external API directly.

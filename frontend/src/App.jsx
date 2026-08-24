@@ -5,7 +5,7 @@ import { getExpenses, addExpense, deleteExpense, convertAmount } from "./api";
 import "./App.css";
 
 // supported currencies must match with ALLOWED_CURRENCIES of backend
-const CURRENCIES = ["USD", "NPR", "EUR", "INR", "GBP"];
+const CURRENCIES = ["USD", "NPR", "EUR", "INR", "GBP", "AUD", "JPY", "CNY"];
 
 function App() {
   const [expenses, setExpenses] = useState([]);
@@ -100,10 +100,14 @@ function App() {
     setExpenses([...expenses, newExpense]);
   }
 
-  // delete expense 
+  // delete expense
   async function handleDelete(id) {
-    await deleteExpense(id);
-    setExpenses(expenses.filter((exp) => exp.id !== id));
+    try {
+      await deleteExpense(id);
+      setExpenses(expenses.filter((exp) => exp.id !== id));
+    } catch (err) {
+      alert(`Failed to delete: ${err.message}`);
+    }
   }
 
   return (

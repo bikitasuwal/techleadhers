@@ -1,10 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const ALLOWED_CURRENCIES = ["USD", "NPR", "EUR", "INR", "GBP"];
-
-// clear error message instead of a generic one
-const NOT_SUPPORTED_BY_PROVIDER = ["NPR"];
+const ALLOWED_CURRENCIES = ["USD", "NPR", "EUR", "INR", "GBP", "AUD", "JPY", "CNY"];
 
 router.get("/", async (req, res) => {
   const { from, to, amount } = req.query;
@@ -29,20 +26,7 @@ router.get("/", async (req, res) => {
     return res.status(400).json({ error: "amount must be a positive number" });
   }
 
-  // Catching known provider gaps before calling the external api
-  if (
-    NOT_SUPPORTED_BY_PROVIDER.includes(fromCurrency) ||
-    NOT_SUPPORTED_BY_PROVIDER.includes(toCurrency)
-  ) {
-    const unsupported = NOT_SUPPORTED_BY_PROVIDER.includes(fromCurrency)
-      ? fromCurrency
-      : toCurrency;
-    return res.status(422).json({
-      error: `${unsupported} is not supported by our exchange rate provider (frankfurter.app uses ECB reference rates).`,
-    });
-  }
-
-  // Frankfurter doesn't support converting a currency to itself in some cases
+  // Same currency — no API call needed
   if (fromCurrency === toCurrency) {
     return res.json({
       from: fromCurrency,
@@ -57,32 +41,34 @@ router.get("/", async (req, res) => {
   const timeoutId = setTimeout(() => controller.abort(), 5000); 
 
   try {
-    const url = `https://api.frankfurter.app/latest?amount=${parsedAmount}&from=${fromCurrency}&to=${toCurrency}`;
+    // v2 API: get the rate, then multiply by amount ourselves
+    const url = `https://api.frankfurter.dev/v2/rate/${fromCurrency}/${toCurrency}`;
     const response = await fetch(url, { signal: controller.signal });
     clearTimeout(timeoutId);
 
     if (!response.ok) {
-      // Frankfurter responds but with error status
       return res.status(502).json({
         error: "Currency conversion service returned an error. Please try again.",
       });
     }
 
     const data = await response.json();
-    const convertedAmount = data.rates[toCurrency];
+    const rate = data.rate;
 
-    if (convertedAmount === undefined) {
+    if (rate === undefined) {
       return res.status(502).json({
         error: "Currency conversion service returned an unexpected response.",
       });
     }
+
+    const convertedAmount = parsedAmount * rate;
 
     return res.json({
       from: fromCurrency,
       to: toCurrency,
       amount: parsedAmount,
       convertedAmount,
-      rate: convertedAmount / parsedAmount,
+      rate,
     });
   } catch (err) {
     clearTimeout(timeoutId);

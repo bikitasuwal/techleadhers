@@ -5,8 +5,8 @@ const router = express.Router();
 // No database so this array resets on every server restart
 let expenses = [];
 
-// supported set for validation but NPR is not supported by frankfurter
-const ALLOWED_CURRENCIES = ["USD", "NPR", "EUR", "INR", "GBP"];
+// supported set for validation
+const ALLOWED_CURRENCIES = ["USD", "NPR", "EUR", "INR", "GBP", "AUD", "JPY", "CNY"];
 
 function validateExpenseInput(body) {
   const errors = [];
