@@ -2,6 +2,15 @@
 
 A small full-stack app where users can log expenses in different currencies and see them converted into a single "home currency," with a running total.
 
+## Features
+
+- Add and delete expenses in 8 currencies (USD, NPR, EUR, INR, GBP, AUD, JPY, CNY)
+- Real-time conversion to a selected home currency with running total
+- Delete confirmation dialog before removing expenses
+- Retry button to re-attempt failed conversions
+- 5-hour exchange rate cache which reduces API calls and provides offline fallback
+- Responsive design, works on mobile and desktop
+
 ## Tech Stack
 
 - **Backend:** Node.js + Express
@@ -76,3 +85,11 @@ GET /convert?from=USD&to=INR&amount=100
 Uses the [Frankfurter v2 API](https://frankfurter.dev) (`api.frankfurter.dev`)
 
 The backend fetches the rate from the API and performs the conversion server-side. The frontend never calls the external API directly.
+
+### Rate Caching
+
+Exchange rates are cached in memory for 5 hours after each successful API call. This means:
+
+- Subsequent conversions for the same currency pair use the cached rate instantly
+- If the external API is temporarily unavailable, the app falls back to the most recently cached rate
+- Rates refresh automatically after the cache expires
