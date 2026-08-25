@@ -9,7 +9,7 @@ const CURRENCIES = ["USD", "NPR", "EUR", "INR", "GBP", "AUD", "JPY", "CNY"];
 
 function App() {
   const [expenses, setExpenses] = useState([]);
-  const [homeCurrency, setHomeCurrency] = useState("INR");
+  const [homeCurrency, setHomeCurrency] = useState("NPR");
   const [convertedExpenses, setConvertedExpenses] = useState([]);
   const [loadingExpenses, setLoadingExpenses] = useState(true);
   const [loadError, setLoadError] = useState(null);

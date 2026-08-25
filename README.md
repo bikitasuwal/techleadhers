@@ -1,6 +1,6 @@
 # Currency & Expense Snapshot
 
-A small full-stack app where users can log expenses in different currencies and see them converted into a single "home currency," with a running total.
+A full-stack expense tracker that converts and totals expenses across multiple currencies into one home currency.
 
 ## Features
 
@@ -36,8 +36,6 @@ npm install
 npm run dev      # runs on http://localhost:5173
 ```
 
-The frontend uses Vite's dev server — API calls to `/expenses` and `/convert` are forwarded to `localhost:5000` via Vite proxy.
-
 ## API Reference
 
 ### Expenses (CRUD)
@@ -52,20 +50,16 @@ The frontend uses Vite's dev server — API calls to `/expenses` and `/convert` 
 
 ```json
 {
-  "title": "Lunch",
-  "amount": 12.50,
+  "title": "dinner",
+  "amount": 25,
   "currency": "USD"
 }
 ```
 
-**Supported currencies:** USD, NPR, EUR, INR, GBP, AUD, JPY, CNY
-
-**Validation:** Returns `400` with error details if title is empty, amount is missing/non-positive, or currency is invalid.
-
 ### Currency Conversion
 
 ```
-GET /convert?from=USD&to=INR&amount=100
+GET /convert?from=USD&to=NPR&amount=100
 ```
 
 **Response:**
@@ -73,18 +67,12 @@ GET /convert?from=USD&to=INR&amount=100
 ```json
 {
   "from": "USD",
-  "to": "INR",
+  "to": "NPR",
   "amount": 100,
-  "convertedAmount": 9574.3,
-  "rate": 95.743
+  "convertedAmount": 15312,
+  "rate": 153.12
 }
 ```
-
-## Exchange Rate API
-
-Uses the [Frankfurter v2 API](https://frankfurter.dev) (`api.frankfurter.dev`)
-
-The backend fetches the rate from the API and performs the conversion server-side. The frontend never calls the external API directly.
 
 ### Rate Caching
 
@@ -93,3 +81,9 @@ Exchange rates are cached in memory for 5 hours after each successful API call. 
 - Subsequent conversions for the same currency pair use the cached rate instantly
 - If the external API is temporarily unavailable, the app falls back to the most recently cached rate
 - Rates refresh automatically after the cache expires
+
+## Limitations
+
+- **Data not persistent** - expenses are stored in memory and lost when the server restarts
+- **Limited currencies** - only 8 currencies supported 
+- **External API dependency** - exchange rates depend on Frankfurter API which may be slow or temporarily unavailable
