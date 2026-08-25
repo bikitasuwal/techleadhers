@@ -3,6 +3,7 @@ export default function ExpenseList({
   converting,
   homeCurrency,
   onDelete,
+  onRetry,
   total,
   anyConversionFailed,
   failedCount,
@@ -32,8 +33,9 @@ export default function ExpenseList({
               <span className="expense-converted">
                 {converting && "Converting..."}
                 {!converting && expense.conversionError && (
-                  <span className="conversion-error" title={expense.conversionError}>
+                  <span className="conversion-error">
                     Conversion unavailable
+                    <button className="retry-btn" onClick={() => onRetry(expense)}>Retry</button>
                   </span>
                 )}
                 {!converting &&

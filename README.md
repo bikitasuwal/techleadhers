@@ -73,6 +73,6 @@ GET /convert?from=USD&to=INR&amount=100
 
 ## Exchange Rate API
 
-Uses the [Frankfurter v2 API](https://frankfurter.dev) (`api.frankfurter.dev`), which provides exchange rates from 84 central banks covering 201 currencies. No API key is required.
+Uses the [Frankfurter v2 API](https://frankfurter.dev) (`api.frankfurter.dev`)
 
 The backend fetches the rate from the API and performs the conversion server-side. The frontend never calls the external API directly.

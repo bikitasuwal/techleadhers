@@ -102,12 +102,35 @@ function App() {
 
   // delete expense
   async function handleDelete(id) {
+    if (!window.confirm("Are you sure you want to delete this expense?")) return;
     try {
       await deleteExpense(id);
       setExpenses(expenses.filter((exp) => exp.id !== id));
     } catch (err) {
       alert(`Failed to delete: ${err.message}`);
     }
+  }
+
+  // retry conversion for a single expense
+  async function retryConvert(expense) {
+    setConverting(true);
+    try {
+      const result = await convertAmount(expense.currency, homeCurrency, expense.amount);
+      setConvertedExpenses(prev =>
+        prev.map(e => e.id === expense.id
+          ? { ...e, convertedAmount: result.convertedAmount, conversionError: null }
+          : e
+        )
+      );
+    } catch (err) {
+      setConvertedExpenses(prev =>
+        prev.map(e => e.id === expense.id
+          ? { ...e, convertedAmount: null, conversionError: err.message }
+          : e
+        )
+      );
+    }
+    setConverting(false);
   }
 
   return (
@@ -143,6 +166,7 @@ function App() {
           converting={converting}
           homeCurrency={homeCurrency}
           onDelete={handleDelete}
+          onRetry={retryConvert}
           total={total}
           anyConversionFailed={anyConversionFailed}
           failedCount={failedCount}
