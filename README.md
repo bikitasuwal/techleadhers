@@ -7,7 +7,7 @@ A full-stack expense tracker that converts and totals expenses across multiple c
 - Add and delete expenses in 8 currencies (USD, NPR, EUR, INR, GBP, AUD, JPY, CNY)
 - Real-time conversion to a selected home currency with running total
 - Delete confirmation dialog before removing expenses
-- Retry button to re-attempt failed conversions
+- Retry button to reattempt failed conversions
 - 5-hour exchange rate cache which reduces API calls and provides offline fallback
 - Responsive design, works on mobile and desktop
 
@@ -87,3 +87,17 @@ Exchange rates are cached in memory for 5 hours after each successful API call. 
 - **Data not persistent** - expenses are stored in memory and lost when the server restarts
 - **Limited currencies** - only 8 currencies supported 
 - **External API dependency** - exchange rates depend on Frankfurter API which may be slow or temporarily unavailable
+
+## Assumptions
+
+- 8 currencies (USD, NPR, EUR, INR, GBP, AUD, JPY, CNY) cover the main use cases for this project
+- In-memory storage is fine since the assignment says data doesn't need to survive a restart
+- No auth needed as it is a single-user app running on localhost
+
+## Improvements with More Time
+
+- Save expenses to a database so they don't disappear on server restart
+- Show proper currency symbols instead of just codes
+- Add tests for the API routes and frontend components
+- Add search/filter to find expenses by currency or date
+- Add date picker (calender) to select specific date
